@@ -35,6 +35,6 @@ python -m venv myenv
 # On macOS/Linux:
 source myenv/bin/activate
 # On Windows PowerShell:
-# .\myenv\Scripts\Activate.ps1
+ .\myenv\Scripts\Activate.ps1
 
 
