@@ -16,3 +16,9 @@ __pycache__/
 
 # Ignore macOS system files
 .DS_Store
+
+Artifacts.py
+
+Similarity.py
+
+Unique_model.py
