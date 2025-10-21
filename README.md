@@ -1,40 +1,76 @@
-# Python Forensic Metadata Scripts 🕵️‍♂️
+# Forensic Metadata Analyzer
 
-This repository contains a set of Python scripts that demonstrate basic digital forensic (DFIR) concepts, specifically focusing on metadata extraction and analysis.
 
-It includes scripts for two main workflows:
-1.  **Live File System Analysis:** Analyzing "live" file metadata (like MAC times) from your operating system and using `pandas` to filter and sort it.
-2.  **Raw Disk Image Analysis:** Analyzing "dead" disk metadata from a raw forensic disk image (`.dd` file) using `pytsk3` (The Sleuth Kit).
+Its purpose is to forensically analyze a collection of digital artifacts (files) and discover both common and hidden relationships. It does this by running two models in parallel:
 
----
-
-## File Descriptions
-
-* **`metadata.py`**: Scans a specified directory (e.g., `Images/`) for image files. It extracts their OS-level metadata (MAC times, file size, etc.) and saves the findings into a `image_metadata.csv` file.
-* **`Analysis.py`**: Reads the `image_metadata.csv` file using `pandas`. It then demonstrates how to:
-    * "Filter" for suspect files based on criteria (e.g., file extension).
-    * "Reconstruct a timeline" by sorting all files based on their creation time.
-* **`disk_image.py`**: Uses `pytsk3` to perform a low-level analysis on a raw disk image. It parses the partition table and can extract file metadata (MAC times, size) and content directly from the raw filesystem, bypassing the live OS.
+* **Similarity Model (Sp, Sg):** Finds obvious connections by clustering artifacts that share identical metadata field-value pairs (e.g., two photos taken with the same `Camera Model`).
+* **Unique Model (UP, UG, UA):** Finds hidden, "sparse" associations by analyzing the metadata that the Similarity Model *ignored*. This can link two artifacts that share the same *value* in different *fields* (e.g., one file with `tag='stolen'` and another with `copyright='stolen'`)
 
 ---
 
-## Requirements & Installation
+## Requirements
 
-It is **highly recommended** to use a Python virtual environment to manage these dependencies.
+This project has a critical system-level dependency.
 
-### Create and Activate Virtual Environment
+1.  **Exiftool:** You **must** have Phil Harvey's [Exiftool](https://exiftool.org/) installed on your system. The Python library `pyexiftool` is just a wrapper and *will not work* unless the main `exiftool` command is available.
 
-```bash
-# Navigate to your project folder
-cd /Users//Desktop/image metadata/
+    * **macOS (using Homebrew):**
+        ```bash
+        brew install exiftool
+        ```
+    * **Windows / Linux:**
+        [Download from the Exiftool website](https://exiftool.org/)
 
-# Create a virtual environment (e.g., named 'myenv')
-python -m venv myenv
+2.  **Python 3:** This project uses a virtual environment.
 
-# Activate the environment
-# On macOS/Linux:
-source myenv/bin/activate
-# On Windows PowerShell:
- .\myenv\Scripts\Activate.ps1
+---
 
+## How to Use
+
+1.  **Clone the Repository**
+    ```bash
+    git clone [https://github.com/suravi73/python-forensic-scripts.git](https://github.com/suravi73/python-forensic-scripts.git)
+    cd python-forensic-scripts
+    ```
+
+2.  **Set up the Environment**
+    ```bash
+    # Create a new virtual environment
+    python3 -m venv venv
+
+    # Activate it (macOS/Linux)
+    source venv/bin/activate
+    # (Windows)
+    # .\venv\Scripts\activate
+
+    # Install the required Python packages
+    pip install pandas networkx pyexiftool
+    ```
+
+3.  **Add Your Artifacts**
+    * Place all your files (images, documents, etc.) into the `Images/` folder (or a folder of your choice).
+
+4.  **Configure the Analysis**
+    * Open `Artifacts.py` with your code editor.
+    * Edit the `artifacts_to_process` list to point to your files.
+    * **Important:** Give each artifact a unique `id` and a `source` to simulate a real investigation (e.g., `S1_Mobile`, `S2_Laptop`).
+
+    ```python
+    # Example from Artifacts.py
+    artifacts_to_process = [
+        # Source 1: "Mobile"
+        {'path': 'Images/leaves.jpg', 'id': 'M_A1', 'source': 'S1_Mobile'},
+        {'path': 'Images/other.jpg',  'id': 'M_A2', 'source': 'S1_Mobile'},
+        
+        # Source 2: "Laptop" - a copy of leaves.jpg
+        {'path': 'Images/leaves.jpg', 'id': 'L_A1', 'source': 'S2_Laptop'}
+    ]
+    ```
+
+5.  **Run the Analyzer**
+    ```bash
+    python3 main_analyzer.py
+    ```
+
+The script will print the metadata extraction log, followed by the results from the Similarity and Unique models.
 
