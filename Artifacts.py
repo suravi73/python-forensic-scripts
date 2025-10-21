@@ -1,4 +1,4 @@
-# artifacts.py
+
 
 import subprocess
 import json
@@ -32,11 +32,7 @@ def extract_metadata(filepath, artifact_id, source_id):
         })
     return flat_metadata
 
-# --- NEW ARTIFACTS LIST ---
-# Let's create a list of files to process with their unique IDs.
-# Make sure you have a few different images in your 'Images/' folder.
-# For this example, I'll assume you have 'leaves.jpg' and 'other.jpg'.
-# I'll also add a file from a different "source".
+
 
 artifacts_to_process = [
     # Source 1: "Mobile"
@@ -54,8 +50,6 @@ for item in artifacts_to_process:
     all_metadata.extend(
         extract_metadata(item['path'], item['id'], item['source'])
     )
-# --- END NEW ---
+
 
 print(f"Extracted metadata from {len(artifacts_to_process)} artifacts.")
-# Optional: a short print to see the metadata
-# print(f"metadata entries: {json.dumps(all_metadata, indent=2)}")
