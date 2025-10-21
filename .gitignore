@@ -17,10 +17,10 @@ __pycache__/
 # Ignore macOS system files
 .DS_Store
 
-Artifacts.py
+#Artifacts.py
 
 Similarity.py
 
 Unique_model.py
 
-main_analyzer.py
+#main_analyzer.py
